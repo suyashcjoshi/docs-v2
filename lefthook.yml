@@ -6,6 +6,10 @@ pre-push:
     packages-audit:
       tags: frontend security
       run: yarn audit
+    hyperlink:
+      tags: frontend html
+      glob: "./public/**/*.html"
+      run: hyperlink {all_files} --sources ./content
 
 pre-commit:
   piped: true 
@@ -104,11 +108,7 @@ pre-commit:
       tags: frontend style
       glob: "*.{css,js,ts,jsx,tsx}"
       run: yarn prettier {staged_files}
-    hyperlink:
-      tags: frontend html
-      glob: "./public/**/*.html"
-      files: 
-      run: hyperlink {staged_files} --sources ./content
+
 build:
   commands:
     prune-legacy-containers:
