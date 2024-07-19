@@ -5,11 +5,11 @@
   "description": "InfluxDB documentation",
   "license": "MIT",
   "devDependencies": {
+    "@evilmartians/lefthook": "^1.7.1",
+    "@untitaker/hyperlink": "^0.1.32",
     "@vvago/vale": "^3.4.2",
     "autoprefixer": ">=10.2.5",
     "hugo-extended": ">=0.101.0",
-    "husky": "^9.0.11",
-    "lint-staged": "^15.2.5",
     "postcss": ">=8.4.31",
     "postcss-cli": ">=9.1.0",
     "prettier": "^3.2.5",
@@ -27,7 +27,6 @@
     "lint-telegraf": "git diff --name-only --diff-filter=d HEAD | grep \"content/telegraf\" | xargs .ci/vale/vale.sh --minAlertLevel=suggestion --config=.vale.ini",
     "lint-v1": "git diff --name-only --diff-filter=d HEAD | grep \"content/influxdb/v1\" | xargs .ci/vale/vale.sh --minAlertLevel=suggestion --config=.vale.ini",
     "lint-v2": "git diff --name-only --diff-filter=d HEAD | grep \"content/influxdb/v2\" | xargs .ci/vale/vale.sh --minAlertLevel=suggestion --config=.vale.ini",
-    "prepare": "husky",
     "test": "lint-staged --relative"
   },
   "main": "index.js",
