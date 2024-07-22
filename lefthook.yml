@@ -6,65 +6,55 @@ pre-push:
     packages-audit:
       tags: frontend security
       run: yarn audit
-    hyperlink:
-      tags: frontend html
-      glob: "./public/**/*.html"
-      run: hyperlink {all_files} --sources ./content
-
+    link-check:
+      tags: lint
+      run: docker compose up link-check
 pre-commit:
-  piped: true 
+  parallel: true 
   commands:
     cloud-lint:
-      priority: 20
-      tags: v2 content
+      tags: lint v2
       glob: "content/influxdb/cloud/**/*.md"
       run: '.ci/vale/vale.sh
-        --config .vale.ini
-        --minAlertLevel error {staged_files}'
+        -config=.vale.ini
+        --minAlertLevel=error {staged_files}'
     cloud-dedicated-lint:
-      priority: 20
-      tags: content v3
+      tags: lint v3
       glob: "content/influxdb/cloud-dedicated/**/*.md"
       run: '.ci/vale/vale.sh
-        --config content/influxdb/cloud-dedicated/.vale.ini
-        --minAlertLevel error {staged_files}'
+        --config=content/influxdb/cloud-dedicated/.vale.ini
+        --minAlertLevel=error {staged_files}'
     cloud-serverless-lint:
-      priority: 20
-      tags: content v3
+      tags: lint v3
       glob: "content/influxdb/cloud-serverless/**/*.md"
       run: '.ci/vale/vale.sh
-        --config content/influxdb/cloud-serverless/.vale.ini
-        --minAlertLevel error {staged_files}'
+        --config=content/influxdb/cloud-serverless/.vale.ini
+        --minAlertLevel=error {staged_files}'
     clustered-lint:
-      priority: 20
-      tags: content v3
+      tags: lint v3
       glob: "content/influxdb/clustered/**/*.md"
       run: '.ci/vale/vale.sh
-        --config content/influxdb/cloud-serverless/.vale.ini
-        --minAlertLevel error {staged_files}'
+        --config=content/influxdb/cloud-serverless/.vale.ini
+        --minAlertLevel=error {staged_files}'
     telegraf-lint:
-      priority: 20
-      tags: content
+      tags: lint clients 
       glob: "content/telegraf/**/*.md"
       run: '.ci/vale/vale.sh
-        --config .vale.ini
-        --minAlertLevel error {staged_files}'
+        --config=.vale.ini
+        --minAlertLevel=error {staged_files}'
     v2-lint:
-      priority: 20
-      tags: v2 content
+      tags: lint v2
       glob: "content/influxdb/v2/**/*.md"
       run: '.ci/vale/vale.sh
-        --config .vale.ini
-        --minAlertLevel error {staged_files}'
+        --config=.vale.ini
+        --minAlertLevel=error {staged_files}'
     cloud-pytest:
-      priority: 50
       glob: content/influxdb/cloud/**/*.md
       tags: test codeblocks v2
       env:
         - SERVICE: cloud-pytest
-      run: docker compose run $CMD '{staged_files}'
+      run: docker compose run $SERVICE '{staged_files}'
     cloud-dedicated-pytest:
-      priority: 50
       tags: test codeblocks v3
       glob: content/influxdb/cloud-dedicated/**/*.md
       env:
@@ -72,38 +62,34 @@ pre-commit:
       run: |
         ./test/scripts/monitor-tests.sh start $SERVICE ;
         docker compose run $SERVICE {staged_files} ;
-        ./test/scripts/monitor-tests.sh stop $SERVICE 
+        ./test/scripts/monitor-tests.sh stop $SERVICE
     cloud-serverless-pytest:
-      priority: 50
       tags: test codeblocks v3
       glob: content/influxdb/cloud-serverless/**/*.md
       env:
         - SERVICE: cloud-serverless-pytest
-      run: docker compose run $CMD '{staged_files}'
+      run: docker compose run $SERVICE '{staged_files}'
     clustered-pytest:
-      priority: 50
       tags: test codeblocks v3
       glob: content/influxdb/clustered/**/*.md
       env:
         - SERVICE: clustered-pytest
       run: |
-        ./test/scripts/monitor-tests.sh start $CMD ;
-        docker compose up $CMD {staged_files} ;
-        ./test/scripts/monitor-tests.sh stop $CMD
+        ./test/scripts/monitor-tests.sh start $SERVICE ;
+        docker compose run $SERVICE {staged_files} ;
+        ./test/scripts/monitor-tests.sh stop $SERVICE
     telegraf-pytest:
-      priority: 50
       tags: test codeblocks
       glob: content/telegraf/**/*.md
       env:
         - SERVICE: telegraf-pytest
-      run: docker compose run $CMD '{staged_files}'
+      run: docker compose run $SERVICE '{staged_files}'
     v2-pytest:
-      priority: 50
       tags: test codeblocks v2
       glob: content/influxdb/v2/**/*.md
       env:
         - SERVICE: v2-pytest
-      run: docker compose run $CMD '{staged_files}'
+      run: docker compose run $SERVICE '{staged_files}'
     prettier:
       tags: frontend style
       glob: "*.{css,js,ts,jsx,tsx}"
